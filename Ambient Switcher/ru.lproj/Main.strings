@@ -1,0 +1,23 @@
+/* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
+"AYu-sK-qS6.title" = "Главное меню";
+
+/* Class = "NSTextFieldCell"; title = "Ambient Switcher"; ObjectID = "Dmj-h8-erb"; */
+"Dmj-h8-erb.title" = "Ambient Switcher";
+
+/* Class = "NSSegmentedCell"; HiU-jr-LD7.ibShadowedLabels[0] = "Light"; ObjectID = "HiU-jr-LD7"; */
+"HiU-jr-LD7.ibShadowedLabels[0]" = "День";
+
+/* Class = "NSSegmentedCell"; HiU-jr-LD7.ibShadowedLabels[1] = "Dark"; ObjectID = "HiU-jr-LD7"; */
+"HiU-jr-LD7.ibShadowedLabels[1]" = "Ночь";
+
+/* Class = "NSSegmentedCell"; HiU-jr-LD7.ibShadowedLabels[2] = "Auto"; ObjectID = "HiU-jr-LD7"; */
+"HiU-jr-LD7.ibShadowedLabels[2]" = "Авто";
+
+/* Class = "NSTextFieldCell"; title = "io.github.ambient-switcher"; ObjectID = "kRQ-AU-nJA"; */
+"kRQ-AU-nJA.title" = "io.github.ambient-switcher";
+
+"lightTypeLabel.stringValue.night" = "Темно";
+
+"lightTypeLabel.stringValue.shadow" = "В тени";
+
+"lightTypeLabel.stringValue.sun" = "Ярко";

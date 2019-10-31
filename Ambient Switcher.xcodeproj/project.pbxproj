@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		895EAEB4236B433E00F877B3 /* NSLocalizedStringExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895EAEB3236B433E00F877B3 /* NSLocalizedStringExtention.swift */; };
 		8966F11023697B4200DE2AE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F10F23697B4200DE2AE0 /* AppDelegate.swift */; };
 		8966F11423697B4400DE2AE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8966F11323697B4400DE2AE0 /* Assets.xcassets */; };
 		8966F11723697B4400DE2AE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8966F11523697B4400DE2AE0 /* Main.storyboard */; };
@@ -18,6 +19,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		895EAEB2236B429A00F877B3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
+		895EAEB3236B433E00F877B3 /* NSLocalizedStringExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLocalizedStringExtention.swift; sourceTree = "<group>"; };
+		895EAEB5236B455200F877B3 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/Main.strings"; sourceTree = "<group>"; };
 		8966F10C23697B4200DE2AE0 /* Ambient Switcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambient Switcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8966F10F23697B4200DE2AE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8966F11323697B4400DE2AE0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -72,6 +76,7 @@
 				8966F1262369939200DE2AE0 /* OSLogExtention.swift */,
 				8966F12823699BB100DE2AE0 /* UIThemeSwitcher.swift */,
 				8966F12A2369D48E00DE2AE0 /* SwitcherViewController.swift */,
+				895EAEB3236B433E00F877B3 /* NSLocalizedStringExtention.swift */,
 			);
 			path = "Ambient Switcher";
 			sourceTree = "<group>";
@@ -126,6 +131,8 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
+				"en-US",
 			);
 			mainGroup = 8966F10323697B4200DE2AE0;
 			productRefGroup = 8966F10D23697B4200DE2AE0 /* Products */;
@@ -154,6 +161,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				895EAEB4236B433E00F877B3 /* NSLocalizedStringExtention.swift in Sources */,
 				8966F12323697BB000DE2AE0 /* LightSensorManager.swift in Sources */,
 				8966F11023697B4200DE2AE0 /* AppDelegate.swift in Sources */,
 				8966F1272369939200DE2AE0 /* OSLogExtention.swift in Sources */,
@@ -169,6 +177,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				8966F11623697B4400DE2AE0 /* Base */,
+				895EAEB2236B429A00F877B3 /* ru */,
+				895EAEB5236B455200F877B3 /* en-US */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -180,6 +190,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -240,6 +251,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

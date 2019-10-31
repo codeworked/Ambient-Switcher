@@ -53,7 +53,7 @@ class SwitcherViewController: NSViewController {
     
     @objc private func nightOccured(_ notification: Notification) {
         DispatchQueue.main.async {
-            self.lightTypeLabel.stringValue = "Night"
+            self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.night".localized()
             self.lightStrengthIndicator.integerValue = 1
             
             if (self._allowAutoSwitch) {
@@ -64,7 +64,7 @@ class SwitcherViewController: NSViewController {
     
     @objc private func shadowOccured(_ notification: Notification) {
         DispatchQueue.main.async {
-            self.lightTypeLabel.stringValue = "Shadow"
+            self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.shadow".localized()
             self.lightStrengthIndicator.integerValue = 2
             
             if (self._allowAutoSwitch) {
@@ -76,7 +76,7 @@ class SwitcherViewController: NSViewController {
     
     @objc private func sunOccured(_ notification: Notification) {
         DispatchQueue.main.async {
-            self.lightTypeLabel.stringValue = "Sun"
+            self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.sun".localized()
             self.lightStrengthIndicator.integerValue = 3
             
             if (self._allowAutoSwitch) {
@@ -89,16 +89,13 @@ class SwitcherViewController: NSViewController {
 }
 
 extension SwitcherViewController {
-  // MARK: Storyboard instantiation
   static func freshController() -> SwitcherViewController {
-    //1.
     let storyboard = NSStoryboard(name: NSStoryboard.Name("Main"), bundle: nil)
-    //2.
     let identifier = NSStoryboard.SceneIdentifier("SwitcherViewController")
-    //3.
     guard let viewcontroller = storyboard.instantiateController(withIdentifier: identifier) as? SwitcherViewController else {
       fatalError("Why cant i find SwitcherViewController? - Check Main.storyboard")
     }
+    
     return viewcontroller
   }
 }
