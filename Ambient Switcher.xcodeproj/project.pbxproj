@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8966F11023697B4200DE2AE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F10F23697B4200DE2AE0 /* AppDelegate.swift */; };
-		8966F11223697B4200DE2AE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F11123697B4200DE2AE0 /* ViewController.swift */; };
 		8966F11423697B4400DE2AE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8966F11323697B4400DE2AE0 /* Assets.xcassets */; };
 		8966F11723697B4400DE2AE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8966F11523697B4400DE2AE0 /* Main.storyboard */; };
 		8966F12123697B7100DE2AE0 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8966F12023697B7100DE2AE0 /* IOKit.framework */; };
@@ -21,7 +20,6 @@
 /* Begin PBXFileReference section */
 		8966F10C23697B4200DE2AE0 /* Ambient Switcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambient Switcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8966F10F23697B4200DE2AE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8966F11123697B4200DE2AE0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8966F11323697B4400DE2AE0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8966F11623697B4400DE2AE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8966F11823697B4400DE2AE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -66,7 +64,6 @@
 			isa = PBXGroup;
 			children = (
 				8966F10F23697B4200DE2AE0 /* AppDelegate.swift */,
-				8966F11123697B4200DE2AE0 /* ViewController.swift */,
 				8966F11323697B4400DE2AE0 /* Assets.xcassets */,
 				8966F11523697B4400DE2AE0 /* Main.storyboard */,
 				8966F11823697B4400DE2AE0 /* Info.plist */,
@@ -158,7 +155,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8966F12323697BB000DE2AE0 /* LightSensorManager.swift in Sources */,
-				8966F11223697B4200DE2AE0 /* ViewController.swift in Sources */,
 				8966F11023697B4200DE2AE0 /* AppDelegate.swift in Sources */,
 				8966F1272369939200DE2AE0 /* OSLogExtention.swift in Sources */,
 				8966F12923699BB100DE2AE0 /* UIThemeSwitcher.swift in Sources */,
