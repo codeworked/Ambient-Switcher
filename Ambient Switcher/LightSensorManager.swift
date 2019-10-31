@@ -20,6 +20,7 @@ enum LMUError: Error {
     case couldNotReadSensor(String)
 }
 
+/// Provides lux types.
 enum AmbientLightType: Int {
     case night = 1
     case shadow = 2
@@ -173,14 +174,17 @@ class LightSensorManager: NSObject {
 }
 
 extension Notification.Name {
+    /// Occures when current lux value is in night range.
     static var nightOccured: Notification.Name {
         return .init(rawValue: "LightSensorManager.nightOccured")
     }
     
+    /// Occures when current lux value is in shadow range.
     static var shadowOccured: Notification.Name {
         return .init(rawValue: "LightSensorManager.shadowOccured")
     }
     
+    /// Occures when current lux value is in sun range.
     static var sunOccured: Notification.Name {
         return .init(rawValue: "LightSensorManager.sunOccured")
     }
