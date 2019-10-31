@@ -33,11 +33,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-      if let button = statusItem.button {
-        button.image = NSImage(named:NSImage.Name("StatusBarButtonImage"))
-        button.action = #selector(togglePopover(_:))
-      }
-      popover.contentViewController = SwitcherViewController.freshController()
+        if let button = statusItem.button {
+            button.image = NSImage(named:NSImage.Name("StatusBarButtonImage"))
+            button.action = #selector(togglePopover(_:))
+        }
+        popover.contentViewController = SwitcherViewController.freshController()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

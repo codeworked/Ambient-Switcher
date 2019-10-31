@@ -49,6 +49,13 @@ class UIThemeSwitcher {
     ///
     /// - Parameter theme: Theme that will be applied.
     static func switchTheme(theme: UITheme) -> Void {
+        // Theme will note be switched if it is already enabled.
+        // In that case we just returning from function.
+        let mode = UserDefaults.standard.string(forKey: "AppleInterfaceStyle") ?? "Light";
+        if ((mode == "Dark" && theme == .DarkTheme) || (mode == "Light" && theme == .LightTheme)) {
+            return;
+        }
+        
         os_log("Switching UI dark mode to: %{PUBLIC}@", log: OSLog.userFlow, type: .info, theme.rawValue)
         
         let source = """
@@ -59,9 +66,9 @@ class UIThemeSwitcher {
             end tell
         """
         
-        /// I don't know why but if we want to execute AppleScript
-        /// from application code we need to do it in Swift queue
-        /// dispatcher asynchronously.
+        // I don't know why but if we want to execute AppleScript
+        // from application code we need to do it in Swift queue
+        // dispatcher asynchronously.
         DispatchQueue.global(qos: .userInitiated).async {
             let executionResult = NSAppleScript(source: source)?.executeAndReturnError(nil).stringValue ?? "success"
             
