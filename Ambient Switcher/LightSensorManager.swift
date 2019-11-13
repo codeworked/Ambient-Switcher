@@ -183,15 +183,15 @@ enum LuxType {
     static func parse(rawLux: Int) -> LuxType {
         var luxType: LuxType = .night
         
-        if (rawLux >= LuxType.night.rawValue.lowerBand && rawLux < LuxType.night.rawValue.upperBand) {
+        if (rawLux.between(min: LuxType.night.rawValue.lowerBand, max: LuxType.night.rawValue.upperBand)) {
             luxType = .night
         }
         
-        if (rawLux > LuxType.shadow.rawValue.lowerBand && rawLux < LuxType.shadow.rawValue.upperBand) {
+        if (rawLux.between(min: LuxType.shadow.rawValue.lowerBand, max: LuxType.shadow.rawValue.upperBand)) {
             luxType = .shadow
         }
         
-        if (rawLux > LuxType.sun.rawValue.lowerBand && rawLux < LuxType.sun.rawValue.upperBand) {
+        if (rawLux.between(min: LuxType.sun.rawValue.lowerBand, max: LuxType.sun.rawValue.upperBand)) {
             luxType = .sun
         }
         
