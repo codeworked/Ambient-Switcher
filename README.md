@@ -1,6 +1,6 @@
 # Ambient-Switcher
  
- ![Ambient Switcher window](https://github.com/codeworked/Ambient-Switcher/blob/master/Screens/screenshot_1.png "Ambient Switcher window")
+ ![Ambient Switcher window](https://user-images.githubusercontent.com/15366398/68812967-71ed1000-0685-11ea-8dc3-81ba0d3ba178.png" Ambient Switcher window")
  
  This is macOS utility for automatic switching theme between Light and Dark depending on current ambient lux ratio arround your MacBook.
  
