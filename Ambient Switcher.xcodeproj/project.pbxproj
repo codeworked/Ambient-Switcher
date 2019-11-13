@@ -11,7 +11,7 @@
 		8966F11423697B4400DE2AE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8966F11323697B4400DE2AE0 /* Assets.xcassets */; };
 		8966F11723697B4400DE2AE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8966F11523697B4400DE2AE0 /* Main.storyboard */; };
 		8966F12123697B7100DE2AE0 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8966F12023697B7100DE2AE0 /* IOKit.framework */; };
-		8966F12323697BB000DE2AE0 /* LightSensorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F12223697BB000DE2AE0 /* LightSensorManager.swift */; };
+		8966F12323697BB000DE2AE0 /* AppleLMUControllerReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F12223697BB000DE2AE0 /* AppleLMUControllerReader.swift */; };
 		8966F1272369939200DE2AE0 /* BaseTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F1262369939200DE2AE0 /* BaseTypeExtensions.swift */; };
 		8966F12923699BB100DE2AE0 /* UIThemeSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F12823699BB100DE2AE0 /* UIThemeSwitcher.swift */; };
 		8966F12B2369D48E00DE2AE0 /* SwitcherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8966F12A2369D48E00DE2AE0 /* SwitcherViewController.swift */; };
@@ -27,7 +27,7 @@
 		8966F11823697B4400DE2AE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8966F11923697B4400DE2AE0 /* Ambient_Switcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Ambient_Switcher.entitlements; sourceTree = "<group>"; };
 		8966F12023697B7100DE2AE0 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		8966F12223697BB000DE2AE0 /* LightSensorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LightSensorManager.swift; sourceTree = "<group>"; };
+		8966F12223697BB000DE2AE0 /* AppleLMUControllerReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLMUControllerReader.swift; sourceTree = "<group>"; };
 		8966F1262369939200DE2AE0 /* BaseTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTypeExtensions.swift; sourceTree = "<group>"; };
 		8966F12823699BB100DE2AE0 /* UIThemeSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIThemeSwitcher.swift; sourceTree = "<group>"; };
 		8966F12A2369D48E00DE2AE0 /* SwitcherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitcherViewController.swift; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 				8966F11523697B4400DE2AE0 /* Main.storyboard */,
 				8966F11823697B4400DE2AE0 /* Info.plist */,
 				8966F11923697B4400DE2AE0 /* Ambient_Switcher.entitlements */,
-				8966F12223697BB000DE2AE0 /* LightSensorManager.swift */,
+				8966F12223697BB000DE2AE0 /* AppleLMUControllerReader.swift */,
 				8966F1262369939200DE2AE0 /* BaseTypeExtensions.swift */,
 				8966F12823699BB100DE2AE0 /* UIThemeSwitcher.swift */,
 				8966F12A2369D48E00DE2AE0 /* SwitcherViewController.swift */,
@@ -158,7 +158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8966F12323697BB000DE2AE0 /* LightSensorManager.swift in Sources */,
+				8966F12323697BB000DE2AE0 /* AppleLMUControllerReader.swift in Sources */,
 				8966F11023697B4200DE2AE0 /* AppDelegate.swift in Sources */,
 				8966F1272369939200DE2AE0 /* BaseTypeExtensions.swift in Sources */,
 				8966F12923699BB100DE2AE0 /* UIThemeSwitcher.swift in Sources */,

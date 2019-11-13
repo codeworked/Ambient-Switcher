@@ -34,13 +34,13 @@ class SwitcherViewController: NSViewController {
         NSApplication.shared.terminate(self)
     }
     
-    private let sensorManager: LightSensorManager = LightSensorManager()
+    private let sensorManager: AppleLMUControllerReader = AppleLMUControllerReader()
     private var autoSwitch: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sensorManager.getLuxContinuous(dataRead: {(luxData: (lux: Int, luxType: LuxType)) -> Void in
+        sensorManager.getLuxContinuously(dataRead: {(luxData: (lux: Int, luxType: LuxType)) -> Void in
             switch luxData.luxType {
             case .night:
                 DispatchQueue.main.async {

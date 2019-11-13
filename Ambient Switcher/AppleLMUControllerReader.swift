@@ -13,7 +13,7 @@ import OSLog
 
 /// Provides access to data from Apple LMU
 /// controller on motherboard.
-class LightSensorManager: NSObject {
+class AppleLMUControllerReader: NSObject {
     /// Initializes a new instance of subject.
     ///
     /// - Parameter dataPort: Port number on which Apple LMU controller can be
@@ -40,9 +40,9 @@ class LightSensorManager: NSObject {
         
         do {
             try rawLux = self.getRawLux(useNormalizedValues: true)
-        } catch LMUError.couldNotGetSensor {
+        } catch AppleLMUControllerReaderError.couldNotGetSensor {
             os_log("Can't get LMU controller device.", log: OSLog.userFlow, type: .error)
-        } catch LMUError.couldNotReadSensor {
+        } catch AppleLMUControllerReaderError.couldNotReadSensor {
             os_log("Can't read data from LMU controller device. MacBooks with Tachbar doesn't support.", log: OSLog.userFlow, type: .error)
         } catch let error {
             os_log("%{PUBLIC}@", log: OSLog.userFlow, type: .error, error.localizedDescription)
@@ -58,7 +58,7 @@ class LightSensorManager: NSObject {
     /// - Parameter qualityOfService: Allows developer to choose which QoS mode will be used for background read task. By default it is set to DispatchQoS.QoSClass.userInitiated.
     /// - Parameter dataRead: Clojure executing every time when data was read from Apple LMU controller.
     /// - Parameter luxValue: Contains current data read from Apple LMU controller and parsed lux type from this data.
-    public func getLuxContinuous(qualityOfService: DispatchQoS.QoSClass = .userInitiated, dataRead: @escaping (_ luxValue: (lux: Int, luxType: LuxType)) -> Void) -> Void {
+    public func getLuxContinuously(qualityOfService: DispatchQoS.QoSClass = .userInitiated, dataRead: @escaping (_ luxValue: (lux: Int, luxType: LuxType)) -> Void) -> Void {
         self.continuousEnabled = true
         
         DispatchQueue.global(qos: qualityOfService).async {
@@ -85,7 +85,7 @@ class LightSensorManager: NSObject {
         
         try DispatchQueue.global(qos: .userInitiated).sync {
             guard let serviceType = IOServiceMatching("AppleLMUController") else {
-                throw LMUError.couldNotGetSensor("Can't get LMU controller")
+                throw AppleLMUControllerReaderError.couldNotGetSensor("Can't get LMU controller")
             }
             
             let service = IOServiceGetMatchingService(kIOMasterPortDefault, serviceType)
@@ -94,7 +94,7 @@ class LightSensorManager: NSObject {
             }
             
             guard IOServiceOpen(service, mach_task_self_, 0, &self.dataPort) == KERN_SUCCESS else {
-                throw LMUError.couldNotReadSensor("Can't read data from LMU controller")
+                throw AppleLMUControllerReaderError.couldNotReadSensor("Can't read data from LMU controller")
             }
             
             setbuf(stdout, nil)
@@ -104,7 +104,7 @@ class LightSensorManager: NSObject {
             let zero: UnsafeMutablePointer<Int> = UnsafeMutablePointer<Int>.allocate(capacity: 8)
             
             guard IOConnectCallMethod(self.dataPort, 0, nil, 0, nil, 0, values, &outputs, nil, zero) == KERN_SUCCESS else {
-                throw LMUError.couldNotReadSensor("Can't read data from LMU controller")
+                throw AppleLMUControllerReaderError.couldNotReadSensor("Can't read data from LMU controller")
             }
             
             rawLux = Int(values[0])
@@ -119,10 +119,10 @@ class LightSensorManager: NSObject {
 
 // MARK: Exceptions
 
-extension LightSensorManager {
+extension AppleLMUControllerReader {
     /// Enumerates error which can be occured
     /// while working with LightSensorManager.
-    enum LMUError: Error {
+    enum AppleLMUControllerReaderError: Error {
         /// Occures when Apple LMU controller
         /// can't be physicaly accessed.
         case couldNotGetSensor(String)
