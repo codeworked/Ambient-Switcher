@@ -1,4 +1,4 @@
-# Ambient-Switcher
+# Ambient Switcher
  
  ![Ambient Switcher window](https://user-images.githubusercontent.com/15366398/68812967-71ed1000-0685-11ea-8dc3-81ba0d3ba178.png "Ambient Switcher window")
  
