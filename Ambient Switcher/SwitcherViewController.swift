@@ -13,20 +13,18 @@ class SwitcherViewController: NSViewController {
     @IBOutlet weak var lightStrengthIndicator: NSLevelIndicator!
     @IBOutlet weak var modeSwitcherButton: NSSegmentedControl!
     
-    private var _allowAutoSwitch: Bool = true
-    
     @IBAction func modeSwitcherButtonAction(_ sender: Any) {
         switch self.modeSwitcherButton.selectedSegment {
         case 0:
             UIThemeSwitcher.switchTheme(theme: .LightTheme)
-            self._allowAutoSwitch = false
+            self.autoSwitch = false
             break;
         case 1:
             UIThemeSwitcher.switchTheme(theme: .DarkTheme)
-            self._allowAutoSwitch = false
+            self.autoSwitch = false
             break;
         case 2:
-            self._allowAutoSwitch = true
+            self.autoSwitch = true
         default:
             break;
         }
@@ -36,56 +34,44 @@ class SwitcherViewController: NSViewController {
         NSApplication.shared.terminate(self)
     }
     
-    private let notificationCenter = NotificationCenter.default
-    private let _lightSensor: LightSensorManager = LightSensorManager.init(dataPort: 0, useNormalizedLuxValues: true)
+    private let sensorManager: LightSensorManager = LightSensorManager()
+    private var autoSwitch: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.notificationCenter.addObserver(self, selector: #selector(nightOccured), name: .nightOccured, object: nil)
-        
-        self.notificationCenter.addObserver(self, selector: #selector(shadowOccured), name: .shadowOccured, object: nil)
-        
-        self.notificationCenter.addObserver(self, selector: #selector(sunOccured), name: .sunOccured, object: nil)
-        
-        self._lightSensor.getLuxContinuous()
-    }
-    
-    @objc private func nightOccured(_ notification: Notification) {
-        DispatchQueue.main.async {
-            self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.night".localized()
-            self.lightStrengthIndicator.integerValue = 1
-            
-            if (self._allowAutoSwitch) {
-                UIThemeSwitcher.switchTheme(theme: .DarkTheme)
+        sensorManager.getLuxContinuous(dataRead: {(luxData: (lux: Int, luxType: LuxType)) -> Void in
+            switch luxData.luxType {
+            case .night:
+                DispatchQueue.main.async {
+                    self.lightStrengthIndicator.integerValue = 1
+                    self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.night".localized()
+                }
+                if (self.autoSwitch) {
+                    UIThemeSwitcher.switchTheme(theme: .DarkTheme)
+                }
+                break
+            case .shadow:
+                DispatchQueue.main.async {
+                    self.lightStrengthIndicator.integerValue = 2
+                    self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.shadow".localized()
+                }
+                if (self.autoSwitch) {
+                    UIThemeSwitcher.switchTheme(theme: .DarkTheme)
+                }
+                break
+            case .sun:
+                DispatchQueue.main.async {
+                    self.lightStrengthIndicator.integerValue = 3
+                    self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.sun".localized()
+                }
+                if (self.autoSwitch) {
+                    UIThemeSwitcher.switchTheme(theme: .LightTheme)
+                }
+                break
             }
-        }
+        })
     }
-    
-    @objc private func shadowOccured(_ notification: Notification) {
-        DispatchQueue.main.async {
-            self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.shadow".localized()
-            self.lightStrengthIndicator.integerValue = 2
-            
-            if (self._allowAutoSwitch) {
-                UIThemeSwitcher.switchTheme(theme: .DarkTheme)
-            }
-
-        }
-    }
-    
-    @objc private func sunOccured(_ notification: Notification) {
-        DispatchQueue.main.async {
-            self.lightTypeLabel.stringValue = "lightTypeLabel.stringValue.sun".localized()
-            self.lightStrengthIndicator.integerValue = 3
-            
-            if (self._allowAutoSwitch) {
-                UIThemeSwitcher.switchTheme(theme: .LightTheme)
-            }
-
-        }
-    }
-    
 }
 
 extension SwitcherViewController {

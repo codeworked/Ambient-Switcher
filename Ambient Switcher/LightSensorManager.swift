@@ -9,72 +9,37 @@
 import Foundation
 import OSLog
 
-/// Enumerates error which can be occured
-/// while working with LightSensorManager.
-enum LMUError: Error {
-    /// Occures when Apple LMU controller
-    /// can't be physicaly accessed.
-    case couldNotGetSensor(String)
-    /// Occures when Apple LMU controller
-    /// initialized but we can't read data from it.
-    case couldNotReadSensor(String)
-}
-
-/// Provides lux types.
-enum AmbientLightType: Int {
-    case night = 1
-    case shadow = 2
-    case sun = 3
-}
+// MARK: Class
 
 /// Provides access to data from Apple LMU
 /// controller on motherboard.
 class LightSensorManager: NSObject {
-    private var _dataPort: io_connect_t;
-    private var _useNormalizedLuxValues: Bool;
-    private let _notificationCenter: NotificationCenter
-    private var _allowContinuous: Bool;
-    
-    private let _minNightLux: Int = 0
-    private let _maxNightLux: Int = 8000
-    private let _minShadowLux: Int = 8001
-    private let _maxShadowLux: Int = 64999
-    private let _minSunLux: Int = 65000
-    private let _maxSunLux: Int = 160000
-    
-    private var _state = AmbientLightType.sun {
-        didSet {
-            self.stateDidChange()
-        }
-    }
-    
     /// Initializes a new instance of subject.
     ///
     /// - Parameter dataPort: Port number on which Apple LMU controller can be
     /// accessed. Default value will be correct in most cases.
-    /// - Parameter useNormalizedLuxValues: Use this for taking lux values
-    /// divided by 10 to get good precision.
     ///
     /// - Returns: An instance of subject.
-    init(dataPort: io_connect_t = 0, useNormalizedLuxValues: Bool = true, notificationCenter: NotificationCenter = .default) {
-        self._dataPort = dataPort
-        self._useNormalizedLuxValues = useNormalizedLuxValues
-        self._notificationCenter = notificationCenter
-        self._allowContinuous = false
+    init(dataPort: io_connect_t = 0) {
+        self.dataPort = dataPort
     }
     
     /// Port number on which Apple LMU controller can be
     /// accessed. Now this is current port.
-    var dataPort: io_connect_t {
-        return self._dataPort;
-    }
+    private(set) var dataPort: io_connect_t
     
-    /// Ambient lux value arround your Mac.
-    var ambientLuxRatio: Int {
-        var lux: Int = 0
+    /// If it's set to true then getting lux values in background
+    /// will be allowed.
+    public var continuousEnabled: Bool = false
+    
+    /// Safely reads lux ratio from Apple LMU Sensor.
+    ///
+    /// - Returns: Value of type (Int, LuxType) where first value is raw lux and second is LuxType.
+    public func getLuxOnce() -> (lux: Int, luxType: LuxType) {
+        var rawLux = 0
         
         do {
-            try lux = self.getLux(useNormalizedValues: self._useNormalizedLuxValues)
+            try rawLux = self.getRawLux(useNormalizedValues: true)
         } catch LMUError.couldNotGetSensor {
             os_log("Can't get LMU controller device.", log: OSLog.userFlow, type: .error)
         } catch LMUError.couldNotReadSensor {
@@ -83,50 +48,25 @@ class LightSensorManager: NSObject {
             os_log("%{PUBLIC}@", log: OSLog.userFlow, type: .error, error.localizedDescription)
         }
 
-        return lux
+        return (lux: rawLux, luxType: .parse(rawLux: rawLux))
     }
     
-    func stateDidChange() -> Void {
-        switch self._state {
-        case .night:
-            self._notificationCenter.post(name: .nightOccured, object: nil)
-        case .shadow:
-            self._notificationCenter.post(name: .shadowOccured, object: nil)
-        case .sun:
-            self._notificationCenter.post(name: .sunOccured, object: nil)
-        }
-    }
-    
-    public func getLuxContinuous(qualityOfService: DispatchQoS.QoSClass = .userInitiated) -> Void {
-        self._allowContinuous = true
+    /// Works in background and reads Apple LMU controller lux data.
+    ///
+    /// - Warning: This methods will work only if continuousEnabled is set to true.
+    ///
+    /// - Parameter qualityOfService: Allows developer to choose which QoS mode will be used for background read task. By default it is set to DispatchQoS.QoSClass.userInitiated.
+    /// - Parameter dataRead: Clojure executing every time when data was read from Apple LMU controller.
+    /// - Parameter luxValue: Contains current data read from Apple LMU controller and parsed lux type from this data.
+    public func getLuxContinuous(qualityOfService: DispatchQoS.QoSClass = .userInitiated, dataRead: @escaping (_ luxValue: (lux: Int, luxType: LuxType)) -> Void) -> Void {
+        self.continuousEnabled = true
         
         DispatchQueue.global(qos: qualityOfService).async {
-            while (self._allowContinuous) {
-                let lux = self.ambientLuxRatio
-                    //debugPrint("raw lux: \(lux)")
-                    
-                if (lux >= self._minNightLux && lux < self._maxNightLux) {
-                    self._state = .night
-                    debugPrint(lux)
-                }
-                
-                if (lux > self._minShadowLux && lux < self._maxShadowLux) {
-                    self._state = .shadow
-                    debugPrint(lux)
-                }
-                
-                if (lux > self._minSunLux && lux < self._maxSunLux) {
-                    self._state = .sun
-                    debugPrint(lux)
-                }
-                
+            while (self.continuousEnabled) {
+                dataRead(self.getLuxOnce())
                 sleep(1)
             }
         }
-    }
-    
-    public func stopContinuousReading() -> Void {
-        self._allowContinuous = false
     }
     
     /// Read lux data from Apple LMU controller.
@@ -140,52 +80,121 @@ class LightSensorManager: NSObject {
     ///           `LMUError.couldNotReadSensor` if it can't read lux data but Apple LMU controller already initialized.
     ///
     /// - Returns: Returns lux values from Apple LMU controller.
-    private func getLux(useNormalizedValues: Bool = true) throws -> Int {
-        guard let serviceType = IOServiceMatching("AppleLMUController") else {
-            throw LMUError.couldNotGetSensor("Can't get LMU controller")
+    public func getRawLux(useNormalizedValues: Bool = true) throws -> Int {
+        var rawLux = 0
+        
+        try DispatchQueue.global(qos: .userInitiated).sync {
+            guard let serviceType = IOServiceMatching("AppleLMUController") else {
+                throw LMUError.couldNotGetSensor("Can't get LMU controller")
+            }
+            
+            let service = IOServiceGetMatchingService(kIOMasterPortDefault, serviceType)
+            defer {
+                IOObjectRelease(service)
+            }
+            
+            guard IOServiceOpen(service, mach_task_self_, 0, &self.dataPort) == KERN_SUCCESS else {
+                throw LMUError.couldNotReadSensor("Can't read data from LMU controller")
+            }
+            
+            setbuf(stdout, nil)
+            
+            var outputs: UInt32 = 2
+            let values = UnsafeMutablePointer<UInt64>.allocate(capacity: Int(outputs))
+            let zero: UnsafeMutablePointer<Int> = UnsafeMutablePointer<Int>.allocate(capacity: 8)
+            
+            guard IOConnectCallMethod(self.dataPort, 0, nil, 0, nil, 0, values, &outputs, nil, zero) == KERN_SUCCESS else {
+                throw LMUError.couldNotReadSensor("Can't read data from LMU controller")
+            }
+            
+            rawLux = Int(values[0])
+            if (useNormalizedValues) {
+                rawLux /= 10
+            }
         }
         
-        let service = IOServiceGetMatchingService(kIOMasterPortDefault, serviceType)
-        defer {
-            IOObjectRelease(service)
-        }
-        
-        guard IOServiceOpen(service, mach_task_self_, 0, &self._dataPort) == KERN_SUCCESS else {
-            throw LMUError.couldNotReadSensor("Can't read data from LMU controller")
-        }
-        
-        setbuf(stdout, nil)
-        
-        var outputs: UInt32 = 2
-        let values = UnsafeMutablePointer<UInt64>.allocate(capacity: Int(outputs))
-        let zero: UnsafeMutablePointer<Int> = UnsafeMutablePointer<Int>.allocate(capacity: 8)
-        
-        guard IOConnectCallMethod(self._dataPort, 0, nil, 0, nil, 0, values, &outputs, nil, zero) == KERN_SUCCESS else {
-            throw LMUError.couldNotReadSensor("Can't read data from LMU controller")
-        }
-        
-        var currentLux = Int(values[0])
-        if (useNormalizedValues) {
-            currentLux /= 10
-        }
-        
-        return currentLux
+        return rawLux
     }
 }
 
-extension Notification.Name {
-    /// Occures when current lux value is in night range.
-    static var nightOccured: Notification.Name {
-        return .init(rawValue: "LightSensorManager.nightOccured")
+// MARK: Exceptions
+
+extension LightSensorManager {
+    /// Enumerates error which can be occured
+    /// while working with LightSensorManager.
+    enum LMUError: Error {
+        /// Occures when Apple LMU controller
+        /// can't be physicaly accessed.
+        case couldNotGetSensor(String)
+        /// Occures when Apple LMU controller
+        /// initialized but we can't read data from it.
+        case couldNotReadSensor(String)
+    }
+}
+
+// MARK: Lux type
+
+/// Lux type ranges.
+///
+/// Example usage for sun:
+/// ```
+///     let sun = LuxType.sun.rawValue
+///     let min = LuxType.sun.lowerBand
+///     let max = LuxType.sun.upperBand
+/// ```
+enum LuxType {
+    case night
+    case shadow
+    case sun
+    
+    var rawValue: (lowerBand: Int, upperBand: Int) {
+        switch self {
+        case .night:
+            return (lowerBand: 0, upperBand: 8000)
+        case .shadow:
+            return (lowerBand: 8001, upperBand: 64999)
+        case .sun:
+            return (lowerBand: 65000, upperBand: 160000)
+        }
+    }
+        
+    init?(rawValue: (lowerBand: Int, upperBand: Int)) {
+        switch rawValue {
+        case (lowerBand: 0, upperBand: 8000):
+            self = .night
+        case (lowerBand: 8001, upperBand: 64999):
+            self = .shadow
+        case (lowerBand: 65000, upperBand: 160000):
+            self = .sun
+        default:
+            return nil
+        }
     }
     
-    /// Occures when current lux value is in shadow range.
-    static var shadowOccured: Notification.Name {
-        return .init(rawValue: "LightSensorManager.shadowOccured")
-    }
-    
-    /// Occures when current lux value is in sun range.
-    static var sunOccured: Notification.Name {
-        return .init(rawValue: "LightSensorManager.sunOccured")
+    /// Parse LuxType from raw value loaded from LMU Sensor.
+    ///
+    /// - Parameter rawLux: Raw lux value from LMU Sensor.
+    ///
+    /// Example of usage:
+    /// ```
+    ///     let sensor = LightSensorManager()
+    ///     let luxType = LuxType.parse(rawLux: sensor.getRawLux())
+    /// ```
+    static func parse(rawLux: Int) -> LuxType {
+        var luxType: LuxType = .night
+        
+        if (rawLux >= LuxType.night.rawValue.lowerBand && rawLux < LuxType.night.rawValue.upperBand) {
+            luxType = .night
+        }
+        
+        if (rawLux > LuxType.shadow.rawValue.lowerBand && rawLux < LuxType.shadow.rawValue.upperBand) {
+            luxType = .shadow
+        }
+        
+        if (rawLux > LuxType.sun.rawValue.lowerBand && rawLux < LuxType.sun.rawValue.upperBand) {
+            luxType = .sun
+        }
+        
+        return luxType
     }
 }
